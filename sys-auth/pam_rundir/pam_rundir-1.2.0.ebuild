@@ -9,7 +9,7 @@ HOMEPAGE="https://gitea.artixlinux.org/artix/pam_rundir"
 inherit git-r3
 
 EGIT_REPO_URI="https://gitea.artixlinux.org/artix/pam_rundir.git"
-EGIT_REPO_COMMIT="e980c83e46e130f21c21178d5e2b5107f5b6e2d3"
+EGIT_REPO_COMMIT="5338dec85e201b7e5fb4aeb0d548448d140ac41e"
 
 LICENSE="GPL2+"
 SLOT="0"
