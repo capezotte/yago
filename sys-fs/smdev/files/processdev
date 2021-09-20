@@ -1,0 +1,2 @@
+#!/bin/sh
+find "/etc/smdev/$ACTION" -type f -executable -exec {} \;
