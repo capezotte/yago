@@ -1,1 +1,1 @@
-pam_rundir-1.2.0.ebuild
+pam_rundir-1.1.0.ebuild
