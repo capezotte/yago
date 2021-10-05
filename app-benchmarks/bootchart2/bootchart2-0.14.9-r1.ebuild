@@ -6,17 +6,19 @@ EAPI=7
 inherit linux-info systemd toolchain-funcs
 
 DESCRIPTION="Performance analysis and visualization of the system boot process"
-HOMEPAGE="https://github.com/mmeeks/bootchart/"
-SRC_URI="https://github.com/mmeeks/bootchart/archive/${PV}.tar.gz -> ${P}.tar.gz"
+HOMEPAGE="https://github.com/xrmx/bootchart"
+SRC_URI="https://github.com/xrmx/bootchart/archive/${PV}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~amd64-linux ~x86-linux"
+IUSE="cairo"
 
-RESTRICT="test"
+RESTRICT="!cairo? ( test )"
 
 RDEPEND="
 	!app-benchmarks/bootchart
+	cairo? ( dev-python/pycairo )
 	sys-apps/lsb-release"
 
 S="${WORKDIR}"/${PN%2}-${PV}
@@ -33,9 +35,21 @@ src_prepare() {
 	sed -i \
 		-e "/^SYSTEMD_UNIT_DIR/s:=.*:= $(systemd_get_systemunitdir):g" \
 		Makefile || die
+
+	if ! use cairo; then
+		sed -i \
+			-e "/^install/s:py-install-compile::g" \
+			-e "/pybootchartgui.1/d" \
+			Makefile || die
+	fi
+
 	sed -i \
 		-e '/^EXIT_PROC/s:^.*$:EXIT_PROC="agetty mgetty mingetty:g' \
 		bootchartd.conf bootchartd.in || die
+}
+
+src_test() {
+	emake test
 }
 
 src_install() {
