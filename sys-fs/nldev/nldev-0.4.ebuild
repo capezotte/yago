@@ -1,8 +1,8 @@
 # Copyright 2021 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=8
-inherit git-r3
+EAPI=7
+inherit git-r3 savedconfig
 
 DESCRIPTION="Lightweight netlink frontend for mdev"
 HOMEPAGE="http://r-36.net/scm/nldev"
@@ -18,15 +18,18 @@ BDEPEND=""
 
 PATCHES=( "$FILESDIR/0001-increase-buffer.patch" )
 
+IUSE="+savedconfig"
+
 src_prepare() {
-	default;
-	cp -- "$FILESDIR/config.h" "$S"
-	cat > modprobe_env <<'EOF'
-EOF
+	default
+	cp -- "$FILESDIR/config.h" config.def.h
+	restore_config config.h
 }
 
 src_install() {
-	default;
 	dodir /usr/libexec/
-	install -m751 -- "$FILESDIR/modprobe_env" "$D/usr/libexec"
+	install -m754 -- "$FILESDIR/modprobe_env" "$D/usr/libexec"
+
+	make DESTDIR="$D" install
+	save_config config.h
 }
