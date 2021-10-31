@@ -1,0 +1,26 @@
+diff --git a/configure b/configure
+index 4627126..37b8437 100755
+--- a/configure
++++ b/configure
+@@ -289,7 +289,7 @@ check_vorbis()
+ 
+ check_libsystemd()
+ {
+-	pkg_config LIBSYSTEMD "libsystemd" || pkg_config LIBSYSTEMD "libelogind >= 239.3"
++	pkg_config LIBSYSTEMD "libsystemd" || pkg_config LIBSYSTEMD "libelogind >= 239.3" || pkg_config LIBSYSTEMD "basu"
+ 	return $?
+ }
+ 
+diff --git a/mpris.c b/mpris.c
+index 0699b0c..2cd6b40 100644
+--- a/mpris.c
++++ b/mpris.c
+@@ -15,7 +15,7 @@
+  * along with this program; if not, see <http://www.gnu.org/licenses/>.
+  */
+ 
+-#include <systemd/sd-bus.h>
++#include <basu/sd-bus.h>
+ 
+ #include "mpris.h"
+ #include "ui_curses.h"
