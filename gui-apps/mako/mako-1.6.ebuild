@@ -24,11 +24,15 @@ DEPEND="
 	dev-libs/wayland
 	x11-libs/pango
 	x11-libs/cairo
-	sys-apps/dbus
 	|| (
-		sys-apps/systemd
-		sys-auth/elogind
-		sys-libs/basu
+		(
+			|| ( sys-apps/systemd sys-auth/elogind )
+			sys-apps/dbus[user-session]
+		)
+		(
+			sys-libs/basu
+			sys-apps/dbus
+		)
 	)
 	icons? (
 		x11-libs/gtk+:3
