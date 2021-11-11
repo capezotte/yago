@@ -1,5 +1,7 @@
 EAPI=8
 
+inherit toolchain-funcs
+
 SLOT=0
 HOMEPAGE="https://github.com/davmac314/dinit"
 SRC_URI="https://github.com/davmac314/${PN}/archive/refs/tags/v${PV}.tar.gz"
@@ -18,5 +20,7 @@ src_prepare() {
 		cd src
 		sh ../configs/mconfig.Linux.sh
 	)
-	use sysv-utils || sed -i '/^BUILD_SHUTDOWN/s/yes/no/' mconfig
+	tc-export CXX || die "Can't find C++ compiler."
+	sed -i "/^CXX=/s/=.*/=${CXX}/" mconfig || die
+	use sysv-utils || sed -i '/^BUILD_SHUTDOWN/s/yes/no/' mconfig || die
 }
