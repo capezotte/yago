@@ -10,17 +10,20 @@ KEYWORDS="~amd64"
 
 BDEPEND="
 	|| ( >=sys-devel/gcc-4.9 >=sys-devel/clang-5.0 )
+	sys-devel/m4
 "
 
 IUSE="-sysv-utils"
 
 src_prepare() {
 	default
-	(
-		cd src
-		sh ../configs/mconfig.Linux.sh
-	)
-	tc-export CXX || die "Can't find C++ compiler."
-	sed -i "/^CXX=/s/=.*/=${CXX}/" mconfig || die
-	use sysv-utils || sed -i '/^BUILD_SHUTDOWN/s/yes/no/' mconfig || die
+	tc-export CXX || die "Can't find C++ settings."
+	printf '%s=%s\n' \
+		"SBINDIR" "/sbin" \
+		"MANDIR" "/usr/share/man" \
+		"SYSCONTROLSOCKET" "/run/dinitctl" \
+		"CXX" "${CXX}" \
+		"CXXOPTS" "${CXXFLAGS} -std=c++11 -D_GLIBCXX_USE_CXX11_ABI=1" \
+		"LDFLAGS" "${LDFLAGS}" \
+		"BUILD_SHUTDOWN" "$(usex sysv-utils yes no)" > mconfig
 }
