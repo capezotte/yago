@@ -14,10 +14,10 @@ if [ "$PV" = 9999 ]; then
 #print(json.load(urllib.request.urlopen("https://ziglang.org/download/index.json"))["master"]["x86_64-linux"]["tarball"])
 #EOF
 #)"
-	KEYWORDS="~amd64"
+	KEYWORDS=""
 else
 	SRC_URI="https://ziglang.org/download/${PV}/zig-linux-x86_64-${PV}.tar.xz"
-	KEYWORDS="amd64"
+	KEYWORDS="~amd64"
 fi
 S="${WORKDIR}/${SRC_URI##*/}"
 S="${S%.tar.xz}"
