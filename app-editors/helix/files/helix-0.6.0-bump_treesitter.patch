@@ -1,0 +1,37 @@
+From 9887ec00bd206ffbc61e592c7ba2eac831f833b9 Mon Sep 17 00:00:00 2001
+From: "dependabot[bot]" <49699333+dependabot[bot]@users.noreply.github.com>
+Date: Mon, 3 Jan 2022 23:05:51 +0000
+Subject: [PATCH] build(deps): bump tree-sitter from 0.20.1 to 0.20.2
+
+Bumps [tree-sitter](https://github.com/tree-sitter/tree-sitter) from 0.20.1 to 0.20.2.
+- [Release notes](https://github.com/tree-sitter/tree-sitter/releases)
+- [Commits](https://github.com/tree-sitter/tree-sitter/compare/v0.20.1...v0.20.2)
+
+---
+updated-dependencies:
+- dependency-name: tree-sitter
+  dependency-type: direct:production
+  update-type: version-update:semver-patch
+...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+---
+ Cargo.lock | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Cargo.lock b/Cargo.lock
+index 83343fc48..38b091e3e 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -1119,9 +1119,9 @@ dependencies = [
+ 
+ [[package]]
+ name = "tree-sitter"
+-version = "0.20.1"
++version = "0.20.2"
+ source = "registry+https://github.com/rust-lang/crates.io-index"
+-checksum = "9394e9dbfe967b5f3d6ab79e302e78b5fb7b530c368d634ff3b8d67ede138bf1"
++checksum = "c36be3222512d85a112491ae0cc280a38076022414f00b64582da1b7565ffd82"
+ dependencies = [
+  "cc",
+  "regex",
