@@ -7,7 +7,7 @@ index 4627126..37b8437 100755
  check_libsystemd()
  {
 -	pkg_config LIBSYSTEMD "libsystemd" || pkg_config LIBSYSTEMD "libelogind >= 239.3"
-+	pkg_config LIBSYSTEMD "libsystemd" || pkg_config LIBSYSTEMD "libelogind >= 239.3" || pkg_config LIBSYSTEMD "basu"
++	pkg_config LIBSYSTEMD "basu"
  	return $?
  }
  

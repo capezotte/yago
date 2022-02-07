@@ -22,8 +22,6 @@ IUSE="aac alsa ao cddb cdio debug discid elogind basu examples ffmpeg +flac jack
 	+mad mikmod modplug mp4 musepack opus oss pidgin pulseaudio systemd tremor +unicode
 	+vorbis wavpack"
 
-REQUIRED_USE="?? ( elogind systemd )"
-
 BDEPEND="
 	virtual/pkgconfig
 "
