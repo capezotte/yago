@@ -14,15 +14,14 @@ SRC_URI="https://github.com/kotatogram/${PN}/releases/download/k${PV}/${P}-full.
 
 LICENSE="BSD GPL-3-with-openssl-exception LGPL-2+"
 SLOT="0"
-KEYWORDS="amd64 ~ppc64"
-IUSE="+dbus enchant +hunspell screencast +spell wayland +X"
+KEYWORDS="~amd64 ~ppc64"
+IUSE="+dbus enchant +hunspell screencast +spell wayland +X +jemalloc"
 REQUIRED_USE="
 	spell? (
 		^^ ( enchant hunspell )
 	)
 "
 
-# dev-libs/jemalloc:=[-lazy-lock]
 RDEPEND="
 	!net-im/telegram-desktop-bin
 	app-arch/lz4:=
@@ -52,6 +51,7 @@ RDEPEND="
 	hunspell? ( >=app-text/hunspell-1.7:= )
 	wayland? ( kde-frameworks/kwayland:= )
 	X? ( x11-libs/libxcb:= )
+	jemalloc? ( dev-libs/jemalloc:=[-lazy-lock] )
 "
 DEPEND="${RDEPEND}
 	dev-cpp/range-v3
@@ -83,6 +83,7 @@ pkg_pretend() {
 }
 
 src_prepare() {
+
 	# no explicit toggle, doesn't build with the system one #752417
 	sed -i 's/DESKTOP_APP_USE_PACKAGED/NO_ONE_WILL_EVER_SET_THIS/' \
 		cmake/external/rlottie/CMakeLists.txt || die
@@ -91,6 +92,19 @@ src_prepare() {
 	#  not sure if thanks to removing the -pie flag in the cmakelists...)
 	sed -i 's/${JEMALLOC_LINK_LIBRARIES}/& dl/' \
 		cmake/external/jemalloc/CMakeLists.txt || die
+
+	if ! use jemalloc; then
+		PATCHES+=( "${FILESDIR}/tdesktop-disable-jemalloc.patch" )
+	elif [ "$ELIBC" != glibc ]; then
+		ewarn 'Jemalloc is known to cause issues on non-glibc systems, and it was enabled on this build.'
+	fi
+
+	if has_version '>=media-video/ffmpeg-5.0'; then
+		PATCHES+=(
+			"${FILESDIR}/tdesktop-3.3-ffmpeg5.patch"
+			"${FILESDIR}/tgcalls-tdesktop-3.3-ffmpeg5.patch"
+		)
+	fi
 
 	cmake_src_prepare
 }
