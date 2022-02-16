@@ -1,1 +1,0 @@
-mako-1.6.ebuild
