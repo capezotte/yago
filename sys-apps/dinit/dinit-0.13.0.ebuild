@@ -2,10 +2,11 @@ EAPI=8
 
 inherit toolchain-funcs
 
+DESCRIPTION="Portable init system with dependency management"
 SLOT=0
 HOMEPAGE="https://github.com/davmac314/dinit"
-SRC_URI="https://github.com/davmac314/${PN}/archive/refs/tags/v${PV}.tar.gz"
-
+SRC_URI="https://github.com/davmac314/${PN}/archive/refs/tags/v${PV}.tar.gz -> ${P}.tar.gz"
+LICENSE="Apache-2.0"
 KEYWORDS="~amd64"
 
 BDEPEND="
@@ -13,11 +14,12 @@ BDEPEND="
 	sys-devel/m4
 "
 
-IUSE="-sysv-utils"
+IUSE="sysv-utils"
 
 src_prepare() {
 	default
 	tc-export CXX || die "Can't find C++ settings."
+	# STRIPOPTS must be unset for Gentoo purposes
 	printf '%s=%s\n' \
 		"SBINDIR" "/sbin" \
 		"MANDIR" "/usr/share/man" \
@@ -25,5 +27,6 @@ src_prepare() {
 		"CXX" "${CXX}" \
 		"CXXOPTS" "${CXXFLAGS} -std=c++11 -D_GLIBCXX_USE_CXX11_ABI=1" \
 		"LDFLAGS" "${LDFLAGS}" \
-		"BUILD_SHUTDOWN" "$(usex sysv-utils yes no)" > mconfig
+		"STRIPOPTS" "" \
+		"BUILD_SHUTDOWN" "$(usex sysv-utils)" > mconfig
 }
