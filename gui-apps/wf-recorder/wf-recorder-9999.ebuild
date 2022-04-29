@@ -22,7 +22,7 @@ IUSE="pulseaudio"
 
 DEPEND="
 	dev-libs/wayland
-	pulseaudio? ( media-sound/pulseaudio )
+	pulseaudio? ( media-libs/libpulse )
 	media-video/ffmpeg[pulseaudio?,x264]
 "
 RDEPEND="${DEPEND}"

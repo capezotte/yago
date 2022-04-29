@@ -45,7 +45,7 @@ DEPEND="
 	mp4? ( >=media-libs/libmp4v2-1.9:0 )
 	musepack? ( >=media-sound/musepack-tools-444 )
 	opus? ( media-libs/opusfile )
-	pulseaudio? ( media-sound/pulseaudio )
+	pulseaudio? ( media-libs/libpulse )
 	systemd? ( sys-apps/systemd )
 	tremor? ( media-libs/tremor )
 	!tremor? ( vorbis? ( >=media-libs/libvorbis-1.0 ) )
@@ -65,10 +65,6 @@ REQUIRED_USE="tremor? ( vorbis )
 DOCS=( AUTHORS README.md )
 
 S="${WORKDIR}/${P/_/-}"
-
-PATCHES=(
-	"${FILESDIR}/${P}-atomic.patch"
-)
 
 src_configure() {
 	my_config() {
@@ -119,6 +115,10 @@ src_configure() {
 
 	if use basu; then
 		eapply "$FILESDIR/basu.patch"
+	fi
+
+	if tc-is-gcc; then
+		eapply "$FILESDIR/${P}-atomic.patch"
 	fi
 
 	./configure prefix="${EPREFIX}"/usr "${myconf[@]}" \
