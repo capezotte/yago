@@ -15,6 +15,11 @@ DEPEND=""
 RDEPEND="${DEPEND}"
 BDEPEND=""
 
+src_prepare() {
+	default
+	sed -i '/^man1_targets/a\\tseekablepipe.1 \\' Makefile
+}
+
 src_compile() {
 	:
 }
