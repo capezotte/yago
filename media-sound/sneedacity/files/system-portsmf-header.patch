@@ -1,0 +1,96 @@
+From 2150d3924a64a1b5c46019d5ee71e1d2a5f0c054 Mon Sep 17 00:00:00 2001
+From: capezotte <carana2099@gmail.com>
+Date: Sat, 22 Oct 2022 13:09:19 -0300
+Subject: [PATCH 3/3] Use system portsmf header
+
+Will break if system portsmf has https://github.com/tenacityteam/portsmf/commit/951b636f7d0cba370d483a91f1897c71f3d98530
+---
+ src/AudioIO.cpp                                         | 2 +-
+ src/NoteTrack.cpp                                       | 2 +-
+ src/effects/ScoreAlignDialog.cpp                        | 2 +-
+ src/import/ImportMIDI.cpp                               | 2 +-
+ src/tracks/playabletrack/notetrack/ui/NoteTrackView.cpp | 2 +-
+ src/tracks/playabletrack/notetrack/ui/StretchHandle.cpp | 2 +-
+ 6 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/src/AudioIO.cpp b/src/AudioIO.cpp
+index db3cdaf16..3aa23fbe8 100644
+--- a/src/AudioIO.cpp
++++ b/src/AudioIO.cpp
+@@ -476,7 +476,7 @@ time warp info and AudioIOListener and whether the playback is looped.
+ 
+ #include "../lib-src/portmidi/pm_common/portmidi.h"
+ #include "../lib-src/portmidi/porttime/porttime.h"
+-#include "../lib-src/header-substitutes/allegro.h"
++#include <portsmf/allegro.h>
+ 
+    #define MIDI_SLEEP 10 /* milliseconds */
+    // how long do we think the thread that fills MIDI buffers,
+diff --git a/src/NoteTrack.cpp b/src/NoteTrack.cpp
+index 3f32280ce..5c52f5ca5 100644
+--- a/src/NoteTrack.cpp
++++ b/src/NoteTrack.cpp
+@@ -26,7 +26,7 @@
+ #include <wx/intl.h>
+ 
+ #if defined(USE_MIDI)
+-#include "../lib-src/header-substitutes/allegro.h"
++#include <portsmf/allegro.h>
+ 
+ #include <sstream>
+ 
+diff --git a/src/effects/ScoreAlignDialog.cpp b/src/effects/ScoreAlignDialog.cpp
+index 2f9d31136..ace49a64c 100644
+--- a/src/effects/ScoreAlignDialog.cpp
++++ b/src/effects/ScoreAlignDialog.cpp
+@@ -45,7 +45,7 @@ It \TODO: description
+ #include <wx/dialog.h>
+ #include "../Prefs.h"
+ #include "../ShuttleGui.h"
+-#include "../lib-src/header-substitutes/allegro.h"
++#include <portsmf/allegro.h>
+ #include "audioreader.h"
+ #include "scorealign.h"
+ #include "scorealign-glue.h"
+diff --git a/src/import/ImportMIDI.cpp b/src/import/ImportMIDI.cpp
+index abd9c82dd..aeb07c41e 100644
+--- a/src/import/ImportMIDI.cpp
++++ b/src/import/ImportMIDI.cpp
+@@ -19,7 +19,7 @@
+ #if defined(USE_MIDI)
+ 
+ 
+-#include "../lib-src/header-substitutes/allegro.h"
++#include <portsmf/allegro.h>
+ 
+ //#include "strparse.h"
+ //#include "mfmidi.h"
+diff --git a/src/tracks/playabletrack/notetrack/ui/NoteTrackView.cpp b/src/tracks/playabletrack/notetrack/ui/NoteTrackView.cpp
+index 8b7512d49..faf854fff 100644
+--- a/src/tracks/playabletrack/notetrack/ui/NoteTrackView.cpp
++++ b/src/tracks/playabletrack/notetrack/ui/NoteTrackView.cpp
+@@ -12,7 +12,7 @@ Paul Licameli split from TrackPanel.cpp
+ #include "NoteTrackView.h"
+ 
+ #ifdef USE_MIDI
+-#include "../lib-src/header-substitutes/allegro.h"
++#include <portsmf/allegro.h>
+ 
+ #include "NoteTrackVRulerControls.h"
+ #include "../../../../NoteTrack.h"
+diff --git a/src/tracks/playabletrack/notetrack/ui/StretchHandle.cpp b/src/tracks/playabletrack/notetrack/ui/StretchHandle.cpp
+index 67bff2a12..21a5cf335 100644
+--- a/src/tracks/playabletrack/notetrack/ui/StretchHandle.cpp
++++ b/src/tracks/playabletrack/notetrack/ui/StretchHandle.cpp
+@@ -11,7 +11,7 @@ Paul Licameli split from TrackPanel.cpp
+ 
+ 
+ #ifdef USE_MIDI
+-#include "../lib-src/header-substitutes/allegro.h"
++#include <portsmf/allegro.h>
+ 
+ #include "StretchHandle.h"
+ 
+-- 
+2.38.1
+
