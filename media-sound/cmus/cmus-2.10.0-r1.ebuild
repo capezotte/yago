@@ -64,6 +64,11 @@ REQUIRED_USE="tremor? ( vorbis )
 
 DOCS=( AUTHORS README.md )
 
+PATCHES=(
+	"${FILESDIR}"/basu.patch
+	"${FILESDIR}"/pipewire.patch
+)
+
 S="${WORKDIR}/${P/_/-}"
 
 src_configure() {
@@ -111,10 +116,6 @@ src_configure() {
 		myconf+=( CONFIG_MPRIS=a )
 	else
 		myconf+=( CONFIG_MPRIS=n )
-	fi
-
-	if use basu; then
-		eapply "$FILESDIR/basu.patch"
 	fi
 
 	if tc-is-gcc; then

@@ -1,26 +1,41 @@
+From 909fd52d5452602030741d2bfef5b52c9435bd6f Mon Sep 17 00:00:00 2001
+From: capezotte <carana2099@gmail.com>
+Date: Thu, 27 Oct 2022 16:56:59 -0300
+Subject: [PATCH] Introduce basu as an option for MPRIS control
+
+---
+ configure | 4 +++-
+ mpris.c   | 4 ++++
+ 2 files changed, 7 insertions(+), 1 deletion(-)
+
 diff --git a/configure b/configure
-index 4627126..37b8437 100755
+index 539df900..f04f66a1 100755
 --- a/configure
 +++ b/configure
-@@ -289,7 +289,7 @@ check_vorbis()
+@@ -315,7 +315,9 @@ check_vorbis()
  
  check_libsystemd()
  {
 -	pkg_config LIBSYSTEMD "libsystemd" || pkg_config LIBSYSTEMD "libelogind >= 239.3"
-+	pkg_config LIBSYSTEMD "basu"
++	pkg_config LIBSYSTEMD "libsystemd" || pkg_config LIBSYSTEMD "libelogind >= 239.3" || {
++		pkg_config LIBSYSTEMD "basu" && CFLAGS="${CFLAGS} -DCONFIG_MPRIS_BASU"
++	}
  	return $?
  }
  
 diff --git a/mpris.c b/mpris.c
-index 0699b0c..2cd6b40 100644
+index af027dc6..3eae2ba9 100644
 --- a/mpris.c
 +++ b/mpris.c
-@@ -15,7 +15,7 @@
+@@ -15,7 +15,11 @@
   * along with this program; if not, see <http://www.gnu.org/licenses/>.
   */
  
--#include <systemd/sd-bus.h>
++#ifdef CONFIG_MPRIS_BASU
 +#include <basu/sd-bus.h>
++#else
+ #include <systemd/sd-bus.h>
++#endif
  
  #include "mpris.h"
  #include "ui_curses.h"
