@@ -1,10 +1,10 @@
-# Copyright 2022 Gentoo Authors
+# Copyright 2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-DESCRIPTION="mdoc versions of the documentation for the s6-portable-utils suite"
-HOMEPAGE="https://github.com/flexibeast/s6-portable-utils-man-pages/"
+DESCRIPTION="mdoc versions of the documentation for the s6-networking suite"
+HOMEPAGE="https://github.com/flexibeast/s6-networking-man-pages/"
 SRC_URI="https://github.com/flexibeast/$PN/archive/refs/tags/v$PV.tar.gz -> $P.tar.gz"
 
 LICENSE="ISC"
