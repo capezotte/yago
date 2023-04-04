@@ -3,8 +3,8 @@
 
 EAPI=8
 
-DESCRIPTION="mdoc versions of the documentation for the s6 suite"
-HOMEPAGE="https://github.com/flexibeast/s6-man-pages/"
+DESCRIPTION="mdoc versions of the documentation for the s6-networking suite"
+HOMEPAGE="https://git.sr.ht/~flexibeast/s6-portable-utils"
 SRC_URI="https://github.com/flexibeast/$PN/archive/refs/tags/v$PV.tar.gz -> $P.tar.gz"
 
 LICENSE="ISC"
@@ -16,5 +16,5 @@ RDEPEND="${DEPEND}"
 BDEPEND=""
 
 src_install() {
-	make MANPATH="$D/usr/share/man" install
+	make MAN_DIR="$D/usr/share/man" install
 }
