@@ -14,7 +14,7 @@ RDEPEND="
 	dev-libs/wayland
 	media-libs/libglvnd
 	x11-libs/pango
-	virtual/jpeg
+	media-libs/libjpeg-turbo
 "
 DEPEND="${RDEPEND}"
 BDEPEND="virtual/pkgconfig"
@@ -22,9 +22,10 @@ BDEPEND="virtual/pkgconfig"
 
 src_configure() {
 	# make it compatible with older compilers
-	sed -i 's/-std=c++23/-std=c++17/g' CMakeLists.txt
-	# libcxx compatibility
-	find -name '*.[ch]pp' -exec sed -i 's/\buint\b/uint32_t /g' -- {} +
+	sed -i 's/-std=c++23/-std=c++17/g' CMakeLists.txt &&
+		# libcxx compatibility
+		find -name '*.[ch]pp' -exec sed -i 's/\buint\b/uint32_t /g' -- {} + ||
+		die
 
 	emake protocols
 	cmake_src_configure
