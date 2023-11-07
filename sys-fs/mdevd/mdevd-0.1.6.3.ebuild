@@ -14,7 +14,7 @@ LICENSE="ISC"
 SLOT="0"
 IUSE="static"
 
-DEPEND="dev-libs/skalibs"
+DEPEND="dev-libs/skalibs:="
 RDEPEND="${DEPEND}"
 
 src_configure() {
