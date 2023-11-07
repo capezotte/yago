@@ -31,9 +31,8 @@ src_configure() {
 	tc-export AR CC RANLIB
 
 	local myconf=(
-		--bindir=/bin
+		--bindir=/usr/bin
 		--dynlibdir="/$(get_libdir)"
-		--libdir="/usr/$(get_libdir)/${PN}"
 		--with-dynlib="/$(get_libdir)"
 		--with-lib="/usr/$(get_libdir)/skalibs"
 		--with-sysdeps="/usr/$(get_libdir)/skalibs"
@@ -44,3 +43,5 @@ src_configure() {
 
 	econf "${myconf[@]}"
 }
+
+
