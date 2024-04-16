@@ -13,7 +13,7 @@ LICENSE="ISC"
 SLOT="0/$(ver_cut 1-2)"
 KEYWORDS="~amd64 ~x86"
 
-RDEPEND=">=dev-libs/skalibs-2.14.0.0:="
+RDEPEND=">=dev-libs/skalibs-2.14.1.0:="
 DEPEND="${RDEPEND}"
 
 HTML_DOCS=( doc/. )

@@ -17,12 +17,12 @@ EOF
 		continue
 	fi
 	OUT="app-doc/${PN}/${PN:?}-${PV:?}.ebuild"
+	OLD_OUT=$(set -- app-doc/${PN}/*.ebuild; shift $(($#-1)); echo "$1")
 	if [ -f "$OUT" ]; then
 		>&2 printf '%s already exists.\n' "$OUT"
-		continue
-	fi
-
-	if install -Dm644 /dev/stdin "$OUT" <<EOF && ebuild "$OUT" digest
+	elif [ -f "$OLD_OUT" ]; then
+		mv -- "$OLD_OUT" "$OUT"
+	elif install -Dm644 /dev/stdin "$OUT" <<EOF
 # Copyright $(date +%Y) Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
@@ -46,9 +46,12 @@ src_install() {
 }
 EOF
 	then
-		printf 'Generated %s.\n' "$OUT"
+		>&2 printf 'Generated %s.\n' "$OUT"
 	else
 		rm -f -- "$OUT"
-		printf 'Generating %s failed.\n' "$OUT"
+		>&2 printf 'Generating %s failed.\n' "$OUT"
+		continue
 	fi
+
+	ebuild "$OUT" digest
 done

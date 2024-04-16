@@ -1,10 +1,10 @@
-# Copyright 2023 Gentoo Authors
+# Copyright 2024 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-DESCRIPTION="mdoc versions of the documentation for the s6-rc suite"
-HOMEPAGE="https://git.sr.ht/~flexibeast/s6-rc-man-pages"
+DESCRIPTION="mdoc versions of the documentation for the execline suite"
+HOMEPAGE="https://git.sr.ht/~flexibeast/execline-man-pages"
 SRC_URI="https://git.sr.ht/~flexibeast/$PN/archive/v$PV.tar.gz -> $P.tar.gz"
 
 LICENSE="ISC"

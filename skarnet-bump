@@ -1,0 +1,22 @@
+#!/bin/sh
+for i in */s6-* sys-apps/s6 dev-lang/execline www-servers/tipidee; do
+	case $i in
+		# skip flexibeast
+		app-doc/*-man-pages) continue ;;
+	esac
+	curl -Lso /tmp/skarnet.html "https://skarnet.org/software/${i#*/}/upgrade.html"
+	VER=$(< /tmp/skarnet.html pup 'h2 text{}' | sed 's/^ in //;s/ $//;q')
+	echo "CHANGES for ${i}-${VER}"
+	< /tmp/skarnet.html pup 'ul:first-of-type' | lynx -dump -stdin
+	read _
+	(
+		cd "$i" || exit
+		output="${i#*/}-${VER}.ebuild"
+		if [ ! -f "$output" ]; then
+			set -- *.ebuild
+			shift $(($#-1))
+			mv -v -- "$1" "$output"
+		fi
+		ebuild "$output" digest
+	)
+done
