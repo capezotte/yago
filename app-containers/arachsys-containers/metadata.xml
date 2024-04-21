@@ -11,6 +11,11 @@
 		utilities, contain, inject and pseudo, which use the kernel support for user
 		namespaces merged in Linux 3.8.
 	</longdescription>
+	<use>
+		<flag name="suid">
+			allow unprivileged users to have multiple UIDs/GIDs in the container (see CVE-2014-8989 for implications)
+		</flag>
+	</use>
 	<upstream>
 		<bugs-to>mailto:chris@arachsys.com</bugs-to>
 		<remote-id type="github">arachsys/containers</remote-id>

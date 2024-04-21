@@ -12,13 +12,15 @@ S="${WORKDIR}/${MY_PN}-${MY_P}"
 LICENSE="MIT"
 SLOT="0"
 KEYWORDS="~amd64"
+IUSE="+suid"
 
 src_compile() {
 	emake CC="$CC" CFLAGS="$CFLAGS"
 }
 
 src_install() {
-	dosbin contain pseudo
-	dobin inject
+	into /
+	dobin inject contain pseudo
 	dodoc README TIPS
+	use suid && fperms u+s /bin/contain /bin/pseudo
 }
