@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>carana2099@gmail.com</email>
+		<description>Carlos E.</description>
+	</maintainer>
+	<longdescription>
+		A lightweight init suite used in Arachsys Linux, this is a toolkit of small utilities
+		including a daemon wrapper supporting asynchronous dependencies and listening sockets,
+		a simple but flexible syslog implementation and an elegant replacement for the increasingly
+		bloated udev daemon.
+	</longdescription>
+	<upstream>
+		<bugs-to>mailto:chris@arachsys.com</bugs-to>
+		<remote-id type="github">arachsys/init</remote-id>
+	</upstream>
+</pkgmetadata>
