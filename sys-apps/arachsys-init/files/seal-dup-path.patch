@@ -1,0 +1,15 @@
+diff --git a/seal.c b/seal.c
+index 3915454..ba4ec95 100644
+--- a/seal.c
++++ b/seal.c
+@@ -21,7 +21,9 @@ int main(int argc, char **argv, char **envp) {
+     return 64;
+   }
+ 
+-  path = getenv("PATH");
++  path = strdup(getenv("PATH"));
++  if (path == NULL)
++    err(EXIT_FAILURE, "malloc");
+   src = -1;
+ 
+   if (strchr(argv[1], '/')) {

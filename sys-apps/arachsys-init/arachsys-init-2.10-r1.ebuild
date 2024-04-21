@@ -12,9 +12,11 @@ S="${WORKDIR}/${MY_PN}-${MY_P}"
 LICENSE="MIT"
 SLOT="0"
 KEYWORDS="~amd64"
+PATCHES="${FILESDIR}/seal-dup-path.patch"
 
 # avoid potential name conflicts
 src_install() {
+	into /
 	for file in *; do
 		if [ -f "$file" ] && [ -x "$file" ]; then
 			case $file in
