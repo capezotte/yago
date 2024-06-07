@@ -15,9 +15,9 @@ KEYWORDS="amd64 ~arm x86"
 IUSE="+sysv-utils"
 
 RDEPEND="
-	dev-lang/execline:=
-	dev-libs/skalibs:=
-	sys-apps/s6:=[execline]
+	>=dev-lang/execline-2.9.4.0:=
+	>=dev-libs/skalibs-2.14.0.0:=
+	>=sys-apps/s6-2.12.0.0:=[execline]
 	sysv-utils? (
 		!sys-apps/openrc[sysv-utils(-)]
 		!sys-apps/systemd[sysv-utils]

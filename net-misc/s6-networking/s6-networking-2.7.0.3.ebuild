@@ -5,15 +5,22 @@ EAPI=8
 
 inherit toolchain-funcs
 
-DESCRIPTION="A non-interactive scripting language"
-HOMEPAGE="https://www.skarnet.org/software/execline/"
+DESCRIPTION="Suite of small networking utilities for Unix systems"
+HOMEPAGE="https://www.skarnet.org/software/s6-networking/"
 SRC_URI="https://www.skarnet.org/software/${PN}/${P}.tar.gz"
 
 LICENSE="ISC"
 SLOT="0/$(ver_cut 1-2)"
-KEYWORDS="amd64 arm ~riscv x86"
+KEYWORDS="~amd64 ~x86"
+IUSE="ssl"
 
-RDEPEND=">=dev-libs/skalibs-2.14.1.1:="
+RDEPEND="
+	>=dev-lang/execline-2.9.6.0:=
+	>=dev-libs/skalibs-2.14.2.0:=
+	>=net-dns/s6-dns-2.3.7.2:=
+	>=sys-apps/s6-2.13.0.0:=[execline]
+	ssl? ( >=dev-libs/libretls-3.8.1 )
+"
 DEPEND="${RDEPEND}"
 
 HTML_DOCS=( doc/. )
@@ -35,12 +42,15 @@ src_configure() {
 		--dynlibdir="/$(get_libdir)"
 		--libdir="/usr/$(get_libdir)/${PN}"
 		--with-dynlib="/$(get_libdir)"
+		--with-lib="/usr/$(get_libdir)/s6"
+		--with-lib="/usr/$(get_libdir)/s6-dns"
 		--with-lib="/usr/$(get_libdir)/skalibs"
 		--with-sysdeps="/usr/$(get_libdir)/skalibs"
 		--enable-shared
 		--disable-allstatic
 		--disable-static
 		--disable-static-libc
+		$(use_enable ssl ssl libtls)
 	)
 
 	econf "${myconf[@]}"

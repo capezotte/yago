@@ -1,5 +1,7 @@
 #!/bin/sh
-for i in */s6-* sys-apps/s6 dev-lang/execline www-servers/tipidee; do
+[ $# -gt 0 ] || set -- dev-libs/skalibs */s6-* sys-apps/s6 dev-lang/execline www-servers/tipidee
+
+for i; do
 	case $i in
 		# skip flexibeast
 		app-doc/*-man-pages) continue ;;
@@ -14,7 +16,9 @@ for i in */s6-* sys-apps/s6 dev-lang/execline www-servers/tipidee; do
 		output="${i#*/}-${VER}.ebuild"
 		if [ ! -f "$output" ]; then
 			set -- *.ebuild
-			shift $(($#-1))
+			while [ $# -gt 1 ] && [ "${2##*-}" != 9999.ebuild ]; do 
+				shift
+			done
 			mv -v -- "$1" "$output"
 		fi
 		ebuild "$output" digest
