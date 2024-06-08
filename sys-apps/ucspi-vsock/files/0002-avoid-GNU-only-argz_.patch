@@ -1,0 +1,212 @@
+From f30ecbb7d96dcde768bb1f1fbae637ebaf662f43 Mon Sep 17 00:00:00 2001
+From: Carlos Eduardo <carana2099@gmail.com>
+Date: Thu, 6 Jun 2024 22:30:01 -0300
+Subject: [PATCH 2/2] avoid GNU-only argz_*
+
+---
+ Makefile.in   |  6 ++--
+ exec.c        | 25 ---------------
+ exec.h        |  7 -----
+ vsockserver.c | 85 +++++++++++++--------------------------------------
+ 4 files changed, 24 insertions(+), 99 deletions(-)
+ delete mode 100644 exec.c
+ delete mode 100644 exec.h
+
+diff --git a/Makefile.in b/Makefile.in
+index 0e65f1f..0739765 100644
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -30,13 +30,13 @@ vsockserver-socketbinder: vsockserver-socketbinder.o log.o num.o vsock.o
+ 	$(CC) $(LDFLAGS) -o $@ $@.o log.o num.o vsock.o $(LDLIBS)
+ vsockserverd: vsockserverd.o env.o log.o vsock.o
+ 	$(CC) $(LDFLAGS) -o $@ $@.o env.o log.o vsock.o $(LDLIBS)
+-vsockserver: vsockserver.o exec.o log.o
+-	$(CC) $(LDFLAGS) -o $@ $@.o exec.o log.o $(LDLIBS)
++vsockserver: vsockserver.o log.o
++	$(CC) $(LDFLAGS) -o $@ $@.o log.o $(LDLIBS)
+ 
+ vsockclient.o: env.h log.h num.h vsock.h
+ vsockserver-socketbinder.o: log.h num.h vsock.h
+ vsockserverd.o: env.h log.h vsock.h
+-vsockserver.o: config.h exec.h log.h
++vsockserver.o: config.h log.h
+ 
+ clean:
+ 	rm -f $(PROGRAMS) *.o
+diff --git a/exec.c b/exec.c
+deleted file mode 100644
+index 75b1980..0000000
+--- a/exec.c
++++ /dev/null
+@@ -1,25 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-or-later
+-// SPDX-FileCopyrightText: 2021 Alyssa Ross <hi@alyssa.is>
+-
+-#define _GNU_SOURCE
+-
+-#include <argz.h>
+-#include <stdlib.h>
+-#include <unistd.h>
+-
+-#include "exec.h"
+-
+-// Like execvp, but takes an argz vector instead of an argv array.
+-int execzp(const char *file, const char *argz, size_t len)
+-{
+-	char **argv = calloc(argz_count(argz, len) + 1, sizeof(char *));
+-	if (!argv)
+-		return -1;
+-
+-	argz_extract(argz, len, argv);
+-
+-	execvp(file, argv);
+-
+-	free(argv);
+-	return -1;
+-}
+diff --git a/exec.h b/exec.h
+deleted file mode 100644
+index 261e113..0000000
+--- a/exec.h
++++ /dev/null
+@@ -1,7 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-or-later
+-// SPDX-FileCopyrightText: 2021 Alyssa Ross <hi@alyssa.is>
+-
+-#include <stddef.h>
+-
+-// Like execvp, but takes an argz vector instead of an argv array.
+-int execzp(const char *file, const char *argz, size_t len);
+diff --git a/vsockserver.c b/vsockserver.c
+index e45c2ea..70d9446 100644
+--- a/vsockserver.c
++++ b/vsockserver.c
+@@ -3,7 +3,6 @@
+ 
+ #define _GNU_SOURCE
+ 
+-#include <argz.h>
+ #include <errno.h>
+ #include <stdbool.h>
+ #include <stdio.h>
+@@ -13,7 +12,6 @@
+ #include <unistd.h>
+ 
+ #include "config.h"
+-#include "exec.h"
+ #include "log.h"
+ 
+ noreturn static void ex_usage(void)
+@@ -28,88 +26,47 @@ noreturn static void ex_usage(void)
+ int main(int argc, char *argv[])
+ {
+ 	int opt;
+-	bool alloc_failed = false;
+-	size_t binder_opts_len = 0, daemon_opts_len = 0;
+-	char *binder_opts = NULL, *daemon_opts = NULL;
+-
+-	// The heavy lifting here is done by vsockserver-socketbinder
+-	// and vsockserverd.  All this program does is munge argv
+-	// appropriately to set the right options for each of those
+-	// programs, and then exec into vsockserver-socketbinder.
+-
+-	// If allocation fails, we need to keep going until after
+-	// we've parsed the arguments, so we know what our verbosity
+-	// setting is, and consequently whether we should print an
+-	// error message about the allocation failure.
+-	alloc_failed |= argz_add(&binder_opts, &binder_opts_len,
+-	                         BINDIR "/vsockserver-socketbinder")
+-		|| argz_add(&daemon_opts, &daemon_opts_len,
+-	                    BINDIR "/vsockserverd");
++	char daemon_opt[4] = "-Q\0";
++	char *binder_opts[argc + 6];
+ 
+ 	while ((opt = getopt(argc, argv, "+1qQv")) != -1) {
+-		char *arg = NULL;
+-
+ 		switch (opt) {
+ 		case '1':
++			daemon_opt[2] = '1';
++			break;
+ 		case 'q':
+ 		case 'Q':
+ 		case 'v':
+-			set_verbosity(opt);
+-			alloc_failed |= asprintf(&arg, "-%c", opt) == -1
+-				|| argz_add(&daemon_opts, &daemon_opts_len,
+-			                    arg);
+-			free(arg);
++			daemon_opt[1] = opt;
+ 			break;
+ 		default:
+ 			ex_usage();
+ 		}
+ 	}
+ 
+-	// Now that verbosity is set, we can whether we were sitting
+-	// on an allocation failure.
+-	if (alloc_failed)
+-		diee(EX_OSERR, "malloc");
+-	// Now we don't have to keep checking alloc_failed before
+-	// doing anything, and we can deal with allocation failures
+-	// after this point by just terminating immediately.
+-
+ 	// Check there are `cid' and `port' arguments to pass to
+ 	// vsockserver-socketbinder, and at least one `prog' argument
+ 	// to pass to vsockserverd.
+ 	if (optind > argc - 3)
+ 		ex_usage();
+ 
+-	// Add `cid' and `port' arguments to binder options.
+-	if (argz_add(&binder_opts, &binder_opts_len, "--")
+-	    || argz_add(&binder_opts, &binder_opts_len, argv[optind++])
+-	    || argz_add(&binder_opts, &binder_opts_len, argv[optind++]))
+-		diee(EX_OSERR, "malloc");
+-
+-	// Add all of daemon_opts onto the end of binder_opts.  It's
+-	// okay to multiply to find the size because if it would
+-	// overflow calloc would have failed earlier.
+-	if (argz_append(&binder_opts, &binder_opts_len, daemon_opts,
+-	                daemon_opts_len))
+-		diee(EX_OSERR, "malloc");
+-	free(daemon_opts);
+-
+-	// Append `prog' to binder_opts.  Technically this should be
+-	// part of daemon_opts, but then we'd just be copying it into
+-	// one place to immediately copy it elsewhere.
+-	for (int i = optind; i < argc; i++)
+-		if (argz_add(&binder_opts, &binder_opts_len, argv[i]))
+-			diee(EX_OSERR, "malloc");
+-
+-	if (verbosity == all) {
+-		char *opt = 0;
+-
+-		// Log the full argv before we exec it.
+-		fprintf(stderr, "%s: executing", program_invocation_short_name);
+-		while ((opt = argz_next(binder_opts, binder_opts_len, opt)))
+-			fprintf(stderr, " %s", opt);
+-		fputc('\n', stderr);
++	binder_opts[0] = BINDIR "/vsockserver-socketbinder";
++	binder_opts[1] = "--";
++	binder_opts[2] = argv[optind];
++	binder_opts[3] = argv[optind + 1];
++	binder_opts[4] = BINDIR "/vsockserverd";
++	binder_opts[5] = daemon_opt;
++
++	// Append `prog' to binder_opts.
++	{
++		int i = optind + 2, j = 6;
++		while (i < argc) {
++			binder_opts[j++] = argv[i++];
++		}
++		binder_opts[j] = NULL;
+ 	}
+ 
+-	execzp(binder_opts, binder_opts, binder_opts_len);
++
++	execvp(binder_opts[0], binder_opts);
+ 	diee(EX_OSERR, "execvp");
+ }
+-- 
+2.45.1
+

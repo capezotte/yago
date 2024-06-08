@@ -1,0 +1,25 @@
+From a3d91a211254e97263985a49bd235ea9cfbf196a Mon Sep 17 00:00:00 2001
+From: Carlos Eduardo <carana2099@gmail.com>
+Date: Thu, 6 Jun 2024 22:29:36 -0300
+Subject: [PATCH 1/2] set PROTO variable
+
+pedantic but it's in the 1996 txt
+---
+ vsockserverd.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/vsockserverd.c b/vsockserverd.c
+index a056bf1..5b074b4 100644
+--- a/vsockserverd.c
++++ b/vsockserverd.c
+@@ -70,6 +70,7 @@ int main(int argc, char *argv[])
+ 
+ 	// Set our CID and port as environment variables so `prog' can
+ 	// know them.
++	setenv("PROTO", "VSOCK", 1);
+ 	setenvf("VSOCKLOCALCID", 1, "%" PRIu32, lcid);
+ 	setenvf("VSOCKLOCALPORT", 1, "%" PRIu32, lport);
+ 
+-- 
+2.45.1
+
