@@ -6,15 +6,12 @@ EAPI=8
 DESCRIPTION="mdoc versions of the documentation for the execline suite"
 HOMEPAGE="https://git.sr.ht/~flexibeast/execline-man-pages"
 SRC_URI="https://git.sr.ht/~flexibeast/$PN/archive/v$PV.tar.gz -> $P.tar.gz"
+S="${WORKDIR}/${PN}-v${PV}"
 
 LICENSE="ISC"
 SLOT="0"
-KEYWORDS="~amd64 ~x86"
 
-DEPEND=""
-RDEPEND="${DEPEND}"
-BDEPEND=""
-S="${WORKDIR}/${PN}-v${PV}"
+KEYWORDS="~amd64 ~x86"
 
 src_install() {
 	make MAN_DIR="$D/usr/share/man" install
