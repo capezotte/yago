@@ -10,7 +10,7 @@ for PN in execline s6 s6-rc s6-portable-utils s6-networking s6-linux-init tipide
 	PN="$PN-man-pages"
 	read -r PV <<EOF
 $(curl -Ls "https://git.sr.ht/~flexibeast/${PN}/refs/rss.xml" |
-	python -c 'import xml.etree.ElementTree as ET; print(ET.parse(0).getroot().find("channel").find("item").find("title").text.strip("v \t"))')
+	python -c 'import xml.etree.ElementTree as ET; print(ET.parse(0).getroot().find("channel").find("item").find("link").text.split("/")[-1].strip("v \t"))')
 EOF
 	if [ ! "$PV" ]; then
 		printf "Can't download version info for %s, skipping.\n" "$PN"
