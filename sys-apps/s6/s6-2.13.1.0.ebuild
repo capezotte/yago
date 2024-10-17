@@ -5,18 +5,18 @@ EAPI=8
 
 inherit toolchain-funcs
 
-DESCRIPTION="Service manager for the s6 supervision suite"
-HOMEPAGE="https://www.skarnet.org/software/s6-rc/"
+DESCRIPTION="skarnet.org's small and secure supervision software suite"
+HOMEPAGE="https://www.skarnet.org/software/s6/"
 SRC_URI="https://www.skarnet.org/software/${PN}/${P}.tar.gz"
 
 LICENSE="ISC"
 SLOT="0/$(ver_cut 1-2)"
-KEYWORDS="amd64 arm x86"
+KEYWORDS="amd64 arm ~riscv x86"
+IUSE="+execline"
 
 RDEPEND="
-	>=dev-lang/execline-2.9.6.0:=
-	>=dev-libs/skalibs-2.14.2.0:=
-	>=sys-apps/s6-2.13.0.0:=[execline]
+	>=dev-libs/skalibs-2.14.3.0:=
+	execline? ( >=dev-lang/execline-2.9.6.1:= )
 "
 DEPEND="${RDEPEND}"
 
@@ -41,25 +41,14 @@ src_configure() {
 		--libexecdir=/lib/s6
 		--with-dynlib="/$(get_libdir)"
 		--with-lib="/usr/$(get_libdir)/execline"
-		--with-lib="/usr/$(get_libdir)/s6"
 		--with-lib="/usr/$(get_libdir)/skalibs"
 		--with-sysdeps="/usr/$(get_libdir)/skalibs"
 		--enable-shared
 		--disable-allstatic
 		--disable-static
 		--disable-static-libc
+		$(use_enable execline)
 	)
 
 	econf "${myconf[@]}"
-}
-
-pkg_postinst() {
-	for ver in ${REPLACING_VERSIONS}; do
-		if ver_test "${ver}" -lt "0.5.4.0"; then
-			elog "Location of helper utilities was changed from /usr/libexec to /lib/s6 in"
-			elog "version 0.5.4.0. It is necessary to recompile and update s6-rc database and"
-			elog "restart s6rc-oneshot-runner service because you are upgrading from older"
-			elog "version."
-		fi
-	done
 }

@@ -5,15 +5,15 @@ EAPI=8
 
 inherit toolchain-funcs
 
-DESCRIPTION="small and fast HTTP/1.1 server"
-HOMEPAGE="https://www.skarnet.org/software/tipidee/"
+DESCRIPTION="Set of tiny portable unix utilities"
+HOMEPAGE="https://www.skarnet.org/software/s6-portable-utils/"
 SRC_URI="https://www.skarnet.org/software/${PN}/${P}.tar.gz"
 
 LICENSE="ISC"
 SLOT="0"
 KEYWORDS="amd64 arm x86"
 
-RDEPEND=">=dev-libs/skalibs-2.14.2.0:="
+RDEPEND=">=dev-libs/skalibs-2.14.3.0:="
 DEPEND="${RDEPEND}"
 
 HTML_DOCS=( doc/. )
@@ -31,8 +31,9 @@ src_configure() {
 	tc-export AR CC RANLIB
 
 	local myconf=(
-		--bindir=/usr/bin
+		--bindir=/bin
 		--dynlibdir="/$(get_libdir)"
+		--libdir="/usr/$(get_libdir)/${PN}"
 		--with-dynlib="/$(get_libdir)"
 		--with-lib="/usr/$(get_libdir)/skalibs"
 		--with-sysdeps="/usr/$(get_libdir)/skalibs"
@@ -43,5 +44,3 @@ src_configure() {
 
 	econf "${myconf[@]}"
 }
-
-

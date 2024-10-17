@@ -5,15 +5,25 @@ EAPI=8
 
 inherit toolchain-funcs
 
-DESCRIPTION="Suite of DNS client programs and libraries for Unix systems"
-HOMEPAGE="https://www.skarnet.org/software/s6-dns/"
+DESCRIPTION="Generates an init binary for s6-based init systems"
+HOMEPAGE="https://www.skarnet.org/software/s6-linux-init/"
 SRC_URI="https://www.skarnet.org/software/${PN}/${P}.tar.gz"
 
 LICENSE="ISC"
 SLOT="0/$(ver_cut 1-2)"
-KEYWORDS="~amd64 ~x86"
+KEYWORDS="amd64 ~arm x86"
+IUSE="+sysv-utils"
 
-RDEPEND=">=dev-libs/skalibs-2.14.2.0:="
+RDEPEND="
+	>=dev-lang/execline-2.9.4.0:=
+	>=dev-libs/skalibs-2.14.3.0:=
+	>=sys-apps/s6-2.13.1.0:=[execline]
+	sysv-utils? (
+		!sys-apps/openrc[sysv-utils(-)]
+		!sys-apps/systemd[sysv-utils]
+		!sys-apps/sysvinit
+	)
+"
 DEPEND="${RDEPEND}"
 
 HTML_DOCS=( doc/. )
@@ -33,8 +43,11 @@ src_configure() {
 	local myconf=(
 		--bindir=/bin
 		--dynlibdir="/$(get_libdir)"
+		--skeldir=/etc/s6-linux-init/skel
 		--libdir="/usr/$(get_libdir)/${PN}"
+		--libexecdir=/lib/s6
 		--with-dynlib="/$(get_libdir)"
+		--with-lib="/usr/$(get_libdir)/s6"
 		--with-lib="/usr/$(get_libdir)/skalibs"
 		--with-sysdeps="/usr/$(get_libdir)/skalibs"
 		--enable-shared
@@ -44,4 +57,19 @@ src_configure() {
 	)
 
 	econf "${myconf[@]}"
+}
+
+src_install() {
+	default
+
+	if use sysv-utils ; then
+		"${D}/bin/s6-linux-init-maker" -f "${D}/etc/s6-linux-init/skel" "${T}/dir" || die
+		into /
+		dosbin "${T}/dir/bin"/{halt,poweroff,reboot,shutdown,telinit}
+	fi
+}
+
+pkg_postinst() {
+	einfo "Read ${EROOT}/usr/share/doc/${PF}/html/quickstart.html"
+	einfo "for usage instructions."
 }
