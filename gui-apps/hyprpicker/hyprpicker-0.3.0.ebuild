@@ -19,10 +19,12 @@ RDEPEND="
 DEPEND="${RDEPEND}"
 BDEPEND="virtual/pkgconfig"
 
+PATCHES=( "${FILESDIR}/use-cxx-std.patch" )
+
 
 src_configure() {
 	# make it compatible with older compilers
-	sed -i 's/-std=c++23/-std=c++17/g' CMakeLists.txt &&
+	sed -i '/CMAKE_CXX_STANDARD/s/23/17/' CMakeLists.txt &&
 		# libcxx compatibility
 		find -name '*.[ch]pp' -exec sed -i 's/\buint\b/uint32_t /g' -- {} + ||
 		die
